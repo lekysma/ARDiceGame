@@ -20,14 +20,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the view's delegate
         sceneView.delegate = self
         
-        // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+        // on cree un cube. PS : 1 est 1M dont 0.1 est 10cm et chamferradius est l'arrondi du cube
+        let cube = SCNBox(width: 0.12, height: 0.12, length: 0.12, chamferRadius: 0.02)
+        // on cree un materiel pour ajouter details au cube
+        let material = SCNMaterial()
+        // ici on definit la couleur que l'on va donner au cube
+        material.diffuse.contents = UIColor.systemBlue
+        // on affecte ces details au cube
+        cube.materials = [material]
+        // enfin on donne une position a ce cube sur un axe horizontal X, vertical Y et proche de soi Z
+        let node = SCNNode()
+        node.position = SCNVector3(0, 0.25, -0.44)
         
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        // on place le cube sur cet axe
+        node.geometry = cube
         
-        // Set the scene to the view
-        sceneView.scene = scene
+        // enfin on place le node dans la scene qui affiche la figure
+        sceneView.scene.rootNode.addChildNode(node)
+        // et on ajoute une luminosite qui rend l'effet 3D plus apparent
+        sceneView.autoenablesDefaultLighting = true
+        
+//        // Create a new scene
+//        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+//
+//        // Set the scene to the view
+//        sceneView.scene = scene
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,18 +75,5 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 */
     
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
-    }
+
 }
