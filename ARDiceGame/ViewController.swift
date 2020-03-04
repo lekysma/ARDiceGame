@@ -20,20 +20,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the view's delegate
         sceneView.delegate = self
         
-        // on cree un cube. PS : 1 est 1M dont 0.1 est 10cm et chamferradius est l'arrondi du cube
-        let cube = SCNBox(width: 0.12, height: 0.12, length: 0.12, chamferRadius: 0.02)
+        // on cree une sphere et on lui donne un rayon
+        let sphere = SCNSphere(radius: 0.14)
         // on cree un materiel pour ajouter details au cube
         let material = SCNMaterial()
-        // ici on definit la couleur que l'on va donner au cube
-        material.diffuse.contents = UIColor.systemBlue
+        // ici on va attacher une image a notre material, image qu'on ajoute a art.scnassets
+        material.diffuse.contents = UIImage(named: "art.scnassets/mars.jpg")
         // on affecte ces details au cube
-        cube.materials = [material]
+        sphere.materials = [material]
         // enfin on donne une position a ce cube sur un axe horizontal X, vertical Y et proche de soi Z
         let node = SCNNode()
         node.position = SCNVector3(0, 0.25, -0.44)
         
         // on place le cube sur cet axe
-        node.geometry = cube
+        node.geometry = sphere
         
         // enfin on place le node dans la scene qui affiche la figure
         sceneView.scene.rootNode.addChildNode(node)
