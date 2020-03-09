@@ -194,10 +194,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     @IBAction func rollAgain(_ sender: UIBarButtonItem) {
         rollAll()
     }
+    
     //MARK: - FONCTIONALITÉ LANCER LES DÉS EN SECOUANT L'APPAREIL
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         rollAll()
     }
+    
+    //MARK: - FONCTIONALITÉ QUI EFFACE TOUS LES DÉS GÉNÉRÉS
+    @IBAction func removeAllDice(_ sender: UIBarButtonItem) {
+        
+        // si le tableau contenant les dés n'est pas vide ...
+        if !diceArray.isEmpty {
+            for dice in diceArray {
+                dice.removeFromParentNode()
+            }
+        }
+    }
+    
     // MARK: - ARSCNViewDelegate
     
 /*
