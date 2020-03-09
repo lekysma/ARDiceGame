@@ -11,6 +11,9 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+    
+    // on cree un table de SCNode qui va contenir tous les dés que l'on crée
+    var diceArray = [SCNNode]()
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -143,21 +146,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                         hitResult.worldTransform.columns.3.z
                     )
                     
+                    // ON AJOUTE LE diceNode au tableau de dé
+                    diceArray.append(diceNode)
                     //enfin on place le node dans la scene qui affiche la figure
                     sceneView.scene.rootNode.addChildNode(diceNode)
                     
-                    //MARK: - Animation pour rendre le lancer de dé aleatoire
-                    // on cree deux variable pour l'axe x et l'axe z
-                    let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
-                    let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
-                    
-                    // on anime cela via le diceNode
-                    diceNode.runAction(SCNAction.rotateBy(
-                        x: CGFloat(randomX * 5),
-                        y: 0,
-                        z: CGFloat(randomZ * 5),
-                        duration: 0.7))
-                    
+                    // on appelle aussi la fonction 'roll' ici
+                    roll(dice: diceNode)
                     
                 } else {
                     print("Impossible d'afficher la figure")
@@ -166,6 +161,43 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
 
+    //MARK:-  2 fonctions qui nous permettent de lancer tous les dés générés en meme temps
+    func rollAll() {
+        // si le tableau de dé n'est pas vide
+        if !diceArray.isEmpty {
+            for dice in diceArray {
+                //on appelle la fonction roll ici
+                roll(dice: dice)
+                
+            }
+        }
+        
+    }
+    //MARK: - Animation pour rendre le lancer de dé aleatoire
+    func roll(dice: SCNNode) {
+        // on cree deux variable pour l'axe x et l'axe z
+        let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+        
+        let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+        
+        // on anime cela via le diceNode
+        dice.runAction(SCNAction.rotateBy(
+            x: CGFloat(randomX * 5),
+            y: 0,
+            z: CGFloat(randomZ * 5),
+            duration: 0.7))
+        
+    }
+    
+    //MARK: - UN BOUTON QUI NOUS PERMETS DE LANCER TOUS LES DÉS GÉNÉRÉS
+    
+    @IBAction func rollAgain(_ sender: UIBarButtonItem) {
+        rollAll()
+    }
+    //MARK: - FONCTIONALITÉ LANCER LES DÉS EN SECOUANT L'APPAREIL
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        rollAll()
+    }
     // MARK: - ARSCNViewDelegate
     
 /*
