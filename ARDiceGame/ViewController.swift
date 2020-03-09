@@ -117,6 +117,54 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             return
         }
     }
+    
+    //MARK: - CODE POUR VERIFIER LE FAIT DE TOUCHER UNE SURFACE VIA L'ECRAN DE L'APPAREIL
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // premier endroit que l'on touche...
+        if let touch = touches.first {
+            // localisation du toucher
+            let touchLocation = touch.location(in: sceneView)
+            
+            // le resultat de notre toucher
+            let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
+            
+            // on affiche notre dé sur l'endroit ou on a cliqué
+            if let hitResult = results.first {
+                  // Create a new scene
+                let diceScene = SCNScene(named: "art.scnassets/diceCollada copy.scn")!
+                
+                // on cree une scene avec comme identifiant celui de notre dé
+                if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
+                    
+                    // on positionne le dé sur l'endroit où on a cliqué
+                    diceNode.position = SCNVector3(
+                        hitResult.worldTransform.columns.3.x,
+                        hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
+                        hitResult.worldTransform.columns.3.z
+                    )
+                    
+                    //enfin on place le node dans la scene qui affiche la figure
+                    sceneView.scene.rootNode.addChildNode(diceNode)
+                    
+                    //MARK: - Animation pour rendre le lancer de dé aleatoire
+                    // on cree deux variable pour l'axe x et l'axe z
+                    let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+                    let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi / 2)
+                    
+                    // on anime cela via le diceNode
+                    diceNode.runAction(SCNAction.rotateBy(
+                        x: CGFloat(randomX * 5),
+                        y: 0,
+                        z: CGFloat(randomZ * 5),
+                        duration: 0.7))
+                    
+                    
+                } else {
+                    print("Impossible d'afficher la figure")
+                }
+            }
+        }
+    }
 
     // MARK: - ARSCNViewDelegate
     
